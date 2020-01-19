@@ -32,7 +32,7 @@ amphora_map = water_load()
 water_locations.update(amphora_map)
 print(water_locations)
 
-
+#create new Amphorae as necessary
 new_store = create_or_update_amphorae(water_locations, location_infos)
 water_save(new_store)
 
