@@ -7,7 +7,6 @@ def signals():
         SignalDto(_property='rainfall', value_type='Numeric'),
         SignalDto(_property='waterLevel', value_type='Numeric'),
         SignalDto(_property='discharge', value_type='Numeric'),
-        SignalDto(_property='dischargeCMS', value_type='Numeric'),
-        SignalDto(_property='electricalConductivity', value_type='Numeric'),
+        SignalDto(_property='elecConductivity', value_type='Numeric'),
         SignalDto(_property='reservoirLevel', value_type='Numeric'),
     ]

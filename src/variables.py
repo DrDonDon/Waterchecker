@@ -2,7 +2,7 @@
 def variable_codes():
     return {
         100.0: 'waterLevel', 140.0: 'dischargeCMS', 141.0: 'discharge',
-        2010.0: 'electricalConductivity', 2080.0: 'temperature',
+        2010.0: 'elecConductivity', 2080.0: 'temperature',
         10.0: 'rainfall', 130.0: 'reservoirLevel'
     }
 

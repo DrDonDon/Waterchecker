@@ -23,9 +23,8 @@ def get_sites_by_source(source):
     return return_value['_return']['datasources'][0]['sites']
 
 
-
 #returns most recent time series values for all available measurements
-def query_ts_values(site_id, var_string):
+def query_ts_values(site_id, var_string, var_dict):
     base_string = 'https://realtimedata.waternsw.com.au/cgi/webservice.pl?'
 
 
@@ -44,9 +43,25 @@ def query_ts_values(site_id, var_string):
                 #each entry in the list in dictionary['values'] has 'v': value,
                 #'time': YYYYMMDDHHMMSS ...
                 for entry in dictionary['values']:
-                    variable_name = variable_dict[float(dictionary['varto'])]
+                    variable_name = var_dict[float(dictionary['varto'])]
+
+                    #TODO: figure out what timestamp format is best
                     time_stamp = datetime.datetime.strptime(entry['time'], '%Y%m%d%H%M%S')
-                    signals.append({'t': time_stamp, variable_name: entry['v']})
+                        #.strftime("%Y-%m-%d %H:%M:%S")
+
+                    try:
+                        entry_value = float(entry['v'])
+                    except ValueError as e:
+                        print("value not received as float: %s\n" % e)
+                        raise e
+
+                    #put values with same timestamp in same dictionary
+                    same_time_index = next((index for (index, d) in enumerate(signals) if d['t'] == time_stamp), None)
+                    if same_time_index != None:
+                        signals[same_time_index][variable_name] = entry_value
+                    else:
+                        signals.append({'t': time_stamp, variable_name: entry_value})
+
     return signals
 
 
