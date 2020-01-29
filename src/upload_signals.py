@@ -6,7 +6,7 @@ import amphora_client
 from amphora_client import Configuration, ApiException
 
 from src.sites import site_info
-from src.variables import variable_codes, variable_string
+from src.variables import variable_codes, variable_string, vic_variable_codes, vic_variable_string, query_params
 from src.load_water_levels import query_ts_values
 from src.signals import signals
 
@@ -71,11 +71,28 @@ def create_or_update_amphorae(amphora_map, location_info):
     return new_map
 
 # this function runs a single ETL process for 1 WaterNSW location to one Amphora
-def upload_signals_to_amphora(site_id, amphora_id):
+def upload_signals_to_amphora(site_id, amphora_id, state_service):
 
-    var_string = variable_string()
-    var_dict = variable_codes()
-    signals = query_ts_values(site_id, var_string, var_dict)
+    if state_service == 'NSW':
+        var_string = variable_string()
+        var_dict = variable_codes()
+        NSW_params = query_params()[state_service]
+        signals = query_ts_values(site_id, var_string, var_dict, NSW_params)
+
+    elif state_service == 'VIC':
+        var_string = vic_variable_string()
+        var_dict = vic_variable_codes()
+        VIC_params = query_params()[state_service]
+        signals = query_ts_values(site_id, var_string, var_dict, VIC_params)
+
+    else:
+        print("error in upload_signals_to_amphora: state_service must be 'NSW' or 'VIC'")
+        return
+
+    if signals == None:
+        print("No signals received")
+        return
+
     print(signals)
     # LOAD
     configuration = Configuration()

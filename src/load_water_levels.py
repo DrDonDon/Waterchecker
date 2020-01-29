@@ -24,43 +24,53 @@ def get_sites_by_source(source):
 
 
 #returns most recent time series values for all available measurements
-def query_ts_values(site_id, var_string, var_dict):
-    base_string = 'https://realtimedata.waternsw.com.au/cgi/webservice.pl?'
+def query_ts_values(site_id, var_string, var_dict, params):
 
-
+    base_string = params['base_string']
     query_object = '{"function":"get_latest_ts_values","version":2,"params":{"site_list":"' +\
-        site_id + '","datasource":"PROV","trace_list":[' + var_string + ']}}'
+            site_id + '","datasource":"' + params['datasource'] +\
+            '","trace_list":[' + var_string + ']}}'
+
     signals = []
 
-    response = requests.get(base_string + query_object)
-    return_value = response.json()
 
-    for value in return_value['_return']:
-        dict_list = return_value['_return'][value]
-        for dictionary in dict_list:
-            if 'error_num' not in dictionary.keys():
+    try:
+        response = requests.get(base_string + query_object)
+        return_value = response.json()
+    except:
+        print("API call unsuccessful")
+        return
 
-                #each entry in the list in dictionary['values'] has 'v': value,
-                #'time': YYYYMMDDHHMMSS ...
-                for entry in dictionary['values']:
-                    variable_name = var_dict[float(dictionary['varto'])]
+    try:
+        for value in return_value['_return']:
+            dict_list = return_value['_return'][value]
+            for dictionary in dict_list:
+                if 'error_num' not in dictionary.keys():
 
-                    #TODO: figure out what timestamp format is best
-                    time_stamp = datetime.datetime.strptime(entry['time'], '%Y%m%d%H%M%S')
-                        #.strftime("%Y-%m-%d %H:%M:%S")
+                    #each entry in the list in dictionary['values'] has 'v': value,
+                    #'time': YYYYMMDDHHMMSS ...
+                    for entry in dictionary['values']:
+                        variable_name = var_dict[float(dictionary['varto'])]
 
-                    try:
-                        entry_value = float(entry['v'])
-                    except ValueError as e:
-                        print("value not received as float: %s\n" % e)
-                        raise e
+                        #TODO: figure out what timestamp format is best
+                        time_stamp = datetime.datetime.strptime(entry['time'], '%Y%m%d%H%M%S')
+                            #.strftime("%Y-%m-%d %H:%M:%S")
 
-                    #put values with same timestamp in same dictionary
-                    same_time_index = next((index for (index, d) in enumerate(signals) if d['t'] == time_stamp), None)
-                    if same_time_index != None:
-                        signals[same_time_index][variable_name] = entry_value
-                    else:
-                        signals.append({'t': time_stamp, variable_name: entry_value})
+                        try:
+                            entry_value = float(entry['v'])
+                        except ValueError as e:
+                            print("value not received as float: %s\n" % e)
+                            raise e
+
+                        #put values with same timestamp in same dictionary
+                        same_time_index = next((index for (index, d) in enumerate(signals) if d['t'] == time_stamp), None)
+                        if same_time_index != None:
+                            signals[same_time_index][variable_name] = entry_value
+                        else:
+                            signals.append({'t': time_stamp, variable_name: entry_value})
+    except KeyError as e:
+        print("Error in API return statement. Signals skipped")
+        return
 
     return signals
 

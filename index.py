@@ -11,7 +11,7 @@ from src.signals import signals
 from src.upload_signals import create_or_update_amphorae, upload_signals_to_amphora
 #maybe from src.load_water_levels import query_ts_values
 
-
+#TODO
 sites = site_info()
 water_locations = dict()
 location_infos = dict()
@@ -38,7 +38,8 @@ water_save(new_store)
 
 # for each WZ Location, run the ETL process
 for water_lc, amphora_id in new_store.items():
-    upload_signals_to_amphora(water_lc, amphora_id)
+    state_service = sites[water_lc]['state_service']
+    upload_signals_to_amphora(water_lc, amphora_id, state_service)
 
 
 
