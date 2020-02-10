@@ -1,4 +1,4 @@
 
-amphoradata==0.5.0.dev2
+amphoradata==0.7.0.dev1
 requests
 python-dotenv

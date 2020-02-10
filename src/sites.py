@@ -7,7 +7,6 @@ def site_info():
         '409001': {'name': 'Murray River at Albury (Union Bridge)', 'lat': -36.091367, 'long': 146.906928, 'state': 'NSW', 'state_service': 'NSW'},
         '410130': {'name': 'Murrumbidgee River at Balranald', 'lat': -34.664975, 'long': 143.491246, 'state': 'NSW', 'state_service': 'NSW'},
         '401549': {'name': 'Murray River at Bringenbrong Bridge', 'lat': -36.167919, 'long': 148.026249, 'state': 'Victoria', 'state_service': 'NSW'},
-        '401211': {'name': 'Mitta Mitta River at Colemans', 'lat': -36.531381, 'long': 147.457739, 'state': 'NSW', 'state_service': 'NSW'},
         '41310022': {'name': 'Murray River at Colignan', 'lat': -34.567142, 'long': 142.406710, 'state': 'Victoria', 'state_service': 'NSW'},
         '409002': {'name': 'Murray River at Corowa', 'lat': -36.007022, 'long': 146.395029, 'state': 'NSW', 'state_service': 'NSW'},
         '401224A': {'name': 'Mitta Mirra River at Dartmouth Dam', 'lat': -36.556936, 'long': 147.529824, 'state': 'Victoria', 'state_service': 'NSW'},

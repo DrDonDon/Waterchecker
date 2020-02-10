@@ -18,7 +18,7 @@ def get_sites_by_source(source):
     sbds_query_object = '{"function": "get_sites_by_datasource","version": 1,\
     "params" : {"datasources": ["'+source+'"]}}'
 
-    response = requests.get(base_string + sbds_query_object)
+    response = requests.get(base_string + sbds_query_object, timeout=5)
     return_value = response.json()
     return return_value['_return']['datasources'][0]['sites']
 
@@ -33,9 +33,8 @@ def query_ts_values(site_id, var_string, var_dict, params):
 
     signals = []
 
-
     try:
-        response = requests.get(base_string + query_object)
+        response = requests.get(base_string + query_object, timeout=8)
         return_value = response.json()
     except:
         print("API call unsuccessful")
@@ -79,8 +78,6 @@ def query_ts_values(site_id, var_string, var_dict, params):
 def query_site_list():
     base_string = 'https://realtimedata.waternsw.com.au/cgi/webservice.pl?'
     sl_query_object = '{"function": "get_site_list","version": 1,"params": {"site_list": "MATCH(20301*)"}}&ver=1'
-    response = requests.get(base_string + sl_query_object)
+    response = requests.get(base_string + sl_query_object, timeout=5)
     return_value = response.json()
     return return_value['_return']['sites']
-
-#print(query_ts_values(Bigarra_id, sample_var_string))

@@ -43,26 +43,28 @@ def create_or_update_amphorae(amphora_map, location_info):
                 # create the details of the Amphora
                 name = 'Water Information: ' + waterloc['name'] + ' (' + waterloc['state'] + ')'
                 desc = 'WaterNSW data, from ' + waterloc['name'] + '. WaterNSW site id: ' + key
-                dto = amphora_client.CreateAmphoraDto(name=name, description=desc, price=0, lat=waterloc['lat'], lon=waterloc['long'])
+                labels = 'Water,actuals,timeseries'
+                terms_and_conditions_id = 'Creative Commons 4.0'
+                dto = amphora_client.CreateAmphora(name=name, description=desc, labels=labels, price=0, lat=waterloc['lat'], lon=waterloc['long'])
 
-                res = amphora_api.amphorae_create(create_amphora_dto=dto)
+                res = amphora_api.amphorae_create(create_amphora=dto)
                 # now create the signals
                 print("Creating Signals")
                 for s in signals():
-                    amphora_api.amphorae_create_signal(res.id, signal_dto=s)
+                    amphora_api.amphorae_signals_create_signal(res.id, signal=s)
 
                 new_map[key] = res.id
             else:
                 a = amphora_api.amphorae_read(id)
                 print(f'Using existing amphora: {a.name}')
                 new_map[key] = id
-                existing_signals = amphora_api.amphorae_get_signals(id)
+                existing_signals = amphora_api.amphorae_signals_get_signals(id)
                 if(len(existing_signals) > 0):
                     print('Signals exist already')
                 else:
                     print('Adding signals')
                     for s in signals():
-                        amphora_api.amphorae_create_signal(id, signal_dto= s)
+                        amphora_api.amphorae_signals_create_signal(id, signal= s)
 
     except ApiException as e:
         print("Error Create or update amphorae: %s\n" % e)
@@ -114,7 +116,7 @@ def upload_signals_to_amphora(site_id, amphora_id, state_service):
 
         print(signals)
 
-        amphora_api.amphorae_upload_signal_batch(amphora.id, request_body = signals) # this sends the data to Amphora Data
+        amphora_api.amphorae_signals_upload_signal_batch(amphora.id, request_body = signals) # this sends the data to Amphora Data
 
         print(f'Sent {len(signals)} signals')
 

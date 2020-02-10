@@ -1,12 +1,12 @@
-from amphora_client import SignalDto
+from amphora_client import Signal
 
 def signals():
     return [
-        SignalDto(_property='description', value_type='String'),
-        SignalDto(_property='temperature', value_type='Numeric'),
-        SignalDto(_property='rainfall', value_type='Numeric'),
-        SignalDto(_property='waterLevel', value_type='Numeric'),
-        SignalDto(_property='discharge', value_type='Numeric'),
-        SignalDto(_property='elecConductivity', value_type='Numeric'),
-        SignalDto(_property='reservoirLevel', value_type='Numeric'),
+        Signal(_property='description', value_type='String'),
+        Signal(_property='temperature', value_type='Numeric'),
+        Signal(_property='rainfall', value_type='Numeric'),
+        Signal(_property='waterLevel', value_type='Numeric'),
+        Signal(_property='discharge', value_type='Numeric'),
+        Signal(_property='elecConductivity', value_type='Numeric'),
+        Signal(_property='reservoirLevel', value_type='Numeric'),
     ]
