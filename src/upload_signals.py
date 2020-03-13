@@ -44,10 +44,13 @@ def create_or_update_amphorae(amphora_map, location_info):
                 name = 'Water Information: ' + waterloc['name'] + ' (' + waterloc['state'] + ')'
                 desc = 'WaterNSW data, from ' + waterloc['name'] + '. WaterNSW site id: ' + key
                 labels = 'Water,actuals,timeseries'
+                ts_cs_id = 'Creative_Commons_4p0'
 
                 #TODO: add terms_and_conditions_id when it's on the website
                 #terms_and_conditions_id = ''
-                dto = amphora_client.CreateAmphora(name=name, description=desc, labels=labels, price=0, lat=waterloc['lat'], lon=waterloc['long'])
+                dto = amphora_client.CreateAmphora(name=name, description=desc, labels=labels,
+                    price=0, lat=waterloc['lat'], lon=waterloc['long'],
+                    terms_and_conditions_id=ts_cs_id)
 
                 res = amphora_api.amphorae_create(create_amphora=dto)
                 # now create the signals
