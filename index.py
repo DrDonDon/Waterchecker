@@ -4,11 +4,23 @@ load_dotenv(verbose=True)
 import os
 import json
 import amphora_client
+import mlflow
+import timeit
 
 from src.mapping import water_save, water_load
 from src.sites import site_info
 from src.signals import signals
 from src.upload_signals import create_or_update_amphorae, upload_signals_to_amphora
+
+## Set up log metrics
+start = timeit.timeit()
+sep='_'
+mlflow.set_tracking_uri("http://aci-mlflow-dns.australiaeast.azurecontainer.io:5000/")
+runName = sep.join(['Job_at',str(datetime.utcnow())])
+mlflow.start_run(experiment_id=6, run_name =runName)
+mlflow.log_metric("time_to_complete", 0)
+mlflow.log_metric("sites_analysed",0)
+mlflow.log_metric("run_complete",0)
 
 sites = site_info()
 water_locations = dict()
@@ -34,11 +46,18 @@ new_store = create_or_update_amphorae(water_locations, location_infos)
 water_save(new_store)
 
 # for each Location, run the ETL process
+run_number = 0
 for water_lc, amphora_id in new_store.items():
+    run_number = run_number+1
     state_service = sites[water_lc]['state_service']
     upload_signals_to_amphora(water_lc, amphora_id, state_service)
-
-
+    mlflow.log_metric("sites_analysed",run_number)
+    
+# Wrap up MLflow loggins    
+end = timeit.timeit()
+mlflow.log_metric("time_to_complete", end - start) 
+mlflow.log_metric("run_complete",1)
+mlflow.end_run() 
 
 '''
 amphora_map = {'401012': '5959944b-579b-4067-a7d7-94207c2d0ed7',
