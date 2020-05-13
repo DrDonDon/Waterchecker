@@ -5,7 +5,7 @@ import os
 import json
 import amphora_client
 import mlflow
-import timeit
+import time
 from datetime import datetime
 
 from src.mapping import water_save, water_load
@@ -14,7 +14,7 @@ from src.signals import signals
 from src.upload_signals import create_or_update_amphorae, upload_signals_to_amphora
 
 ## Set up log metrics
-start = timeit.timeit()
+start = time.time()
 sep='_'
 mlflow.set_tracking_uri("http://aci-mlflow-dns.australiaeast.azurecontainer.io:5000/")
 runName = sep.join(['Job_at',str(datetime.utcnow())])
@@ -55,7 +55,7 @@ for water_lc, amphora_id in new_store.items():
     mlflow.log_metric("sites_analysed",run_number)
     
 # Wrap up MLflow loggins    
-end = timeit.timeit()
+end = time.time()
 mlflow.log_metric("time_to_complete", end - start) 
 mlflow.log_metric("run_complete",1)
 mlflow.end_run() 
